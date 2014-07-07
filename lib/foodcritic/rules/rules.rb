@@ -1,6 +1,6 @@
 require 'pp'
 
-rule 'RACK001', 'Missing license or copyright declarations' do
+rule 'RACK001', 'Missing "# Copyright" declaration' do
   tags %w(style rackspace)
   cookbook do |path|
     matches = []
@@ -15,7 +15,7 @@ rule 'RACK001', 'Missing license or copyright declarations' do
       # need to scan comments for this rule
       lines = File.readlines(recipe)
       next if lines.collect do |line|
-        line.include?('Rackspace') || line.include?('# Copyright') || line.include?('http://www.apache.org/licenses/LICENSE-2.0')
+        line.include?('# Copyright') 
       end.compact.flatten.include? true
 
       matches << {
@@ -68,4 +68,23 @@ rule 'RACK002', 'Recipe contains a single include_recipe' do
   end # cookbook
 end # rule
 
+rule 'RACK003', 'Cookbook is missing a standard file' do
+  tags %w(style rackspace)
 
+  expected_files = %w(README.md metadata.rb LICENSE Gemfile Berksfile Rakefile Thorfile Guardfile .kitchen.yml .rubocop.yml )
+  
+  cookbook do |path|
+    matches = []
+    expected_files.each do |f|
+      next unless !File.exist?("#{path}/#{f}")
+
+      matches << {
+          :filename => "#{f}",
+          :matched => 'missing',
+          :line => 0,
+          :column => 0
+      }
+    end
+    matches
+  end # cookbook
+end # rule
