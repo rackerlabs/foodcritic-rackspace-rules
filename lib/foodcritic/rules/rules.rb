@@ -1,6 +1,6 @@
 require 'pp'
 
-rule 'RACK001', 'Missing license declaration' do
+rule 'RACK001', 'Missing license or copyright declarations' do
   tags %w(style rackspace)
   cookbook do |path|
     matches = []
@@ -15,6 +15,8 @@ rule 'RACK001', 'Missing license declaration' do
       # need to scan comments for this rule
       lines = File.readlines(recipe)
       next if lines.collect do |line|
+        line.include?('Rackspace')
+        line.include?('# Copyright')
         line.include?('http://www.apache.org/licenses/LICENSE-2.0')
       end.compact.flatten.include? true
 
