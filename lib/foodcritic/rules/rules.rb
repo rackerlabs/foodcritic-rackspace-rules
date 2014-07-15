@@ -1,4 +1,4 @@
-require 'pp'
+require 'yaml' # included in ruby
 
 rule 'RACK001', 'Missing "# Copyright" declaration' do
   tags %w(style rackspace)
@@ -15,7 +15,7 @@ rule 'RACK001', 'Missing "# Copyright" declaration' do
       # need to scan comments for this rule
       lines = File.readlines(recipe)
       next if lines.collect do |line|
-        line.include?('# Copyright') 
+        line.include?('# Copyright')
       end.compact.flatten.include? true
 
       matches << {
@@ -72,7 +72,7 @@ rule 'RACK003', 'Cookbook is missing a standard file' do
   tags %w(style rackspace)
 
   expected_files = %w(README.md metadata.rb LICENSE Gemfile Berksfile Rakefile Thorfile Guardfile .kitchen.yml .rubocop.yml )
-  
+
   cookbook do |path|
     matches = []
     expected_files.each do |f|
@@ -85,6 +85,41 @@ rule 'RACK003', 'Cookbook is missing a standard file' do
           :column => 0
       }
     end
+    matches
+  end # cookbook
+end # rule
+
+rule 'RACK004', 'Cookbook is missing a default test suite' do
+  tags %w(style rackspace)
+
+  search_files = %w( .kitchen.yml .kitchen.local.yml )
+  default_suite_found = false
+
+  cookbook do |path|
+    matches = []
+
+    search_files.each do |f|
+      next unless File.exist?("#{path}/#{f}")
+
+      kitchen_config = YAML.load_file("#{path}/#{f}")
+
+      next if !kitchen_config.has_key?('suites')
+
+      kitchen_config['suites'].each do |test_suite|
+        next unless test_suite.has_key?('name')
+        default_suite_found = true if test_suite['name'] == 'default'
+      end
+    end
+
+    if !default_suite_found
+      matches << {
+          :filename => ".kitchen.local.yml",
+          :matched => 'missing default test suite',
+          :line => 0,
+          :column => 0
+      }
+    end
+
     matches
   end # cookbook
 end # rule
