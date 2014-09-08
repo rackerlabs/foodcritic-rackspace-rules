@@ -142,3 +142,21 @@ rule 'RACK005', "Cookbook metadata must have#{req_fields.string}" do
     end
   end # cookbook
 end # rule
+
+rule 'RACK006', 'Cookbook chefspec and rspec tests should be in ./test/unit/spec, not ./spec' do
+  tags %w(style rackspace)
+
+  default_suite_found = false
+
+  cookbook do |path|
+    next unless File.exist?("#{path}/spec")
+    matches = []
+    matches << {
+        :filename => false,
+        :matched => 'should not be here',
+        :line => 0,
+        :column => 0
+    }
+    matches
+  end # cookbook
+end # rule
