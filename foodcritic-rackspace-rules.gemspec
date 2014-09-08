@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["martin@mbs3.org"]
   spec.summary       = %q{Foodcritic rules for rackops cookbooks or stacks}
   spec.description   = %q{See README.md}
-  spec.homepage      = "https://github.com/AutomationSupport/foodcritic-rackspace-rules"
+  spec.homepage      = "https://github.com/racker/foodcritic-rackspace-rules"
   spec.license       = "Apache-2.0"
 
   spec.files         = `git ls-files -z`.split("\x0")
@@ -18,6 +18,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "bundler", "~> 1.6"
-  spec.add_development_dependency "rake"
+  spec.add_runtime_dependency 'bundler', '~> 1.6'
+  spec.add_runtime_dependency 'rake'
+  spec.add_runtime_dependency 'foodcritic'
 end

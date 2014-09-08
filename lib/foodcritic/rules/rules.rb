@@ -1,4 +1,5 @@
 require 'yaml' # included in ruby
+require 'foodcritic/chef'
 
 rule 'RACK001', 'Missing "# Copyright" declaration' do
   tags %w(style rackspace)
@@ -121,5 +122,23 @@ rule 'RACK004', 'Cookbook is missing a default test suite' do
     end
 
     matches
+  end # cookbook
+end # rule
+
+rack005_required_fields = {
+  'maintainer' => 'Rackspace',
+  'maintainer_email' => 'rackspace-cookbooks@rackspace.com',
+  'license' => 'Apache 2.0'
+}
+req_fields = StringIO.new
+rack005_required_fields.each do |k, v|
+  req_fields << " #{k}='#{v}'"
+end
+rule 'RACK005', "Cookbook metadata must have#{req_fields.string}" do
+  tags %w(style rackspace)
+  metadata do |ast, filename|
+    rack005_required_fields.map do |field, value|
+      ast.xpath(%Q(//command[ident/@value='#{field}']/descendant::tstring_content[@value!='#{value}']))
+    end
   end # cookbook
 end # rule
