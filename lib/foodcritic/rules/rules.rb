@@ -165,10 +165,11 @@ rule 'RACK007', "Cookbook must be licensed Apache 2.0 (public) or All rights res
   apache = 'Apache 2.0'
   arr = 'All rights reserved'
   metadata do |ast, filename|
-    rack005_required_fields.map do |field, value| #
-      license_value = ast.xpath(%Q(//command[ident/@value='license']/descendant::tstring_content/@value))
-      next if license_value.nil? || license_value.to_s == apache || license_value.to_s == arr
-      ast.xpath(%Q(//command[ident/@value='license']/descendant::tstring_content))
+    matches = []
+    license_value = ast.xpath(%Q(//command[ident/@value='license']/descendant::tstring_content/@value))
+    if license_value.nil? || !(license_value.to_s == apache || license_value.to_s == arr)
+      matches << ast.xpath(%Q(//command[ident/@value='license']/descendant::tstring_content))
     end
+    matches
   end # metadata
 end # rule
