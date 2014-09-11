@@ -128,7 +128,6 @@ end # rule
 rack005_required_fields = {
   'maintainer' => 'Rackspace',
   'maintainer_email' => 'rackspace-cookbooks@rackspace.com',
-  'license' => 'Apache 2.0'
 }
 req_fields = StringIO.new
 rack005_required_fields.each do |k, v|
@@ -140,10 +139,10 @@ rule 'RACK005', "Cookbook metadata must have#{req_fields.string}" do
     rack005_required_fields.map do |field, value|
       ast.xpath(%Q(//command[ident/@value='#{field}']/descendant::tstring_content[@value!='#{value}']))
     end
-  end # cookbook
+  end # metadata
 end # rule
 
-rule 'RACK006', 'Cookbook chefspec and rspec tests should be in ./test/unit/spec, not ./spec' do
+rule 'RACK006', 'Cookbook rspec (chefspec) tests should be in ./test/unit/spec, not ./spec' do
   tags %w(style rackspace)
 
   default_suite_found = false
@@ -159,4 +158,17 @@ rule 'RACK006', 'Cookbook chefspec and rspec tests should be in ./test/unit/spec
     }
     matches
   end # cookbook
+end # rule
+
+rule 'RACK007', "Cookbook must be licensed Apache 2.0 (public) or All rights reserved (private)" do
+  tags %w(style rackspace)
+  apache = 'Apache 2.0'
+  arr = 'All rights reserved'
+  metadata do |ast, filename|
+    rack005_required_fields.map do |field, value| #
+      license_value = ast.xpath(%Q(//command[ident/@value='license']/descendant::tstring_content/@value))
+      next if license_value.nil? || license_value.to_s == apache || license_value.to_s == arr
+      ast.xpath(%Q(//command[ident/@value='license']/descendant::tstring_content))
+    end
+  end # metadata
 end # rule
