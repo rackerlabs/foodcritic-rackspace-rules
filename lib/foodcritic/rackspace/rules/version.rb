@@ -1,7 +1,7 @@
 module Foodcritic
   module Rackspace
     module Rules
-      VERSION = "1.2.2"
+      VERSION = "1.2.3"
     end
   end
 end
