@@ -93,7 +93,7 @@ end # rule
 rule 'RACK004', 'Cookbook is missing a default test suite' do
   tags %w(style rackspace)
 
-  search_files = %w( .kitchen.yml .kitchen.local.yml )
+  search_files = %w( .kitchen.yml )
   default_suite_found = false
 
   cookbook do |path|
@@ -114,7 +114,7 @@ rule 'RACK004', 'Cookbook is missing a default test suite' do
 
     if !default_suite_found
       matches << {
-          :filename => ".kitchen.local.yml",
+          :filename => ".kitchen.yml",
           :matched => 'missing default test suite',
           :line => 0,
           :column => 0
