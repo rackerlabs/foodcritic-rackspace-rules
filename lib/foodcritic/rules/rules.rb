@@ -102,7 +102,15 @@ rule 'RACK004', 'Cookbook is missing a default test suite' do
     search_files.each do |f|
       next unless File.exist?("#{path}/#{f}")
 
-      kitchen_config = YAML.load_file("#{path}/#{f}")
+      # if we can't parse .kitchen.yml for some reason, don't fail on it
+      # we may just be seeing ERB used in it. if it's a true error, test-kitchen
+      # will blow up on it anyway
+      begin
+        kitchen_config = YAML.load_file("#{path}/#{f}")
+      rescue
+        default_suite_found = true # don't blow up
+        next
+      end
 
       next if !kitchen_config.has_key?('suites')
 
