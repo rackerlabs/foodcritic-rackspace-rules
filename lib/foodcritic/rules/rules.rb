@@ -181,3 +181,46 @@ rule 'RACK007', "Cookbook must be licensed Apache 2.0 (public) or All rights res
     matches
   end # metadata
 end # rule
+
+rule 'RACK008', 'Files expected by Support must exist' do
+  tags %w(style rackspace-support)
+  expected_files = %w(Berksfile.lock)
+
+  cookbook do |path|
+    matches = []
+    expected_files.each do |f|
+      next unless !File.exist?("#{path}/#{f}")
+
+      matches << {
+        filename: "#{f}",
+        matched: 'missing',
+        line: => 0,
+        column: => 0
+      }
+    end
+    matches
+  end # cookbook
+end
+
+rule 'RACK009', 'Berksfile.lock must not be in .gitignore' do
+  tags %w(style rackspace-support)
+
+  cookbook do
+    matches = []
+
+    gitignore = '.gitignore'
+    lines = File.readlines(gitignore)
+
+    lines.each do |line|
+      if line.include?('Berksfile.lock')
+        matches << {
+          filename: gitignore,
+          matched: 'Berksfile.lock should not be here',
+          line: lines.index(line),
+          column: 0
+        }
+      end
+    end
+    matches
+  end
+end # rule
