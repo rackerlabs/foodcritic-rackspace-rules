@@ -194,8 +194,8 @@ rule 'RACK008', 'Files expected by Support must exist' do
       matches << {
         filename: "#{f}",
         matched: 'missing',
-        line: => 0,
-        column: => 0
+        line: 0,
+        column: 0
       }
     end
     matches
