@@ -224,3 +224,20 @@ rule 'RACK009', 'Berksfile.lock must not be in .gitignore' do
     matches
   end
 end # rule
+
+rule 'RACK010', 'Cookbook contains dummy encrypted_data_bag_secret' do
+  tags %w(style rackspace-support)
+
+  cookbook do |path|
+    matches = []
+    if File.exist?("#{path}/test/integration/encrypted_data_bag_secret")
+      matches << {
+        filename: 'test/integration/encrypted_data_bag_secret',
+        matched: 'exists',
+        line: 0,
+        column: 0
+      }
+    end
+    matches
+  end # cookbook
+end # rule
