@@ -72,7 +72,7 @@ end # rule
 rule 'RACK003', 'Cookbook is missing a standard file' do
   tags %w(style rackspace)
 
-  expected_files = %w(README.md metadata.rb LICENSE Gemfile Berksfile Rakefile Thorfile Guardfile .kitchen.yml .rubocop.yml CHANGELOG.md )
+  expected_files = %w(README.md metadata.rb Gemfile Berksfile Rakefile .kitchen.yml .rubocop.yml CHANGELOG.md )
 
   cookbook do |path|
     matches = []
